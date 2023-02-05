@@ -1,12 +1,13 @@
+import Layout from '@/layout/layout';
 import Head from 'next/head';
 
-export default function login() {
+export default function Login() {
   return (
-    <div>
+    <Layout>
       <Head>
         <title>Login</title>
       </Head>
       <h1>Login</h1>
-    </div>
+    </Layout>
   );
 }
