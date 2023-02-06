@@ -6,9 +6,21 @@ import styles from '../styles/Form.module.css';
 import { HiFingerPrint, HiAtSymbol } from 'react-icons/hi';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
+import { useFormik } from 'formik';
 
 export default function Login() {
   const [show, setShow] = useState(false);
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    onSubmit,
+  });
+
+  async function onSubmit(values) {
+    console.log(values);
+  }
 
   async function handleGoogleSignIn() {
     signIn('google', { callbackUrl: 'http://localhost:3000' });
@@ -24,13 +36,14 @@ export default function Login() {
           <h1 className='text-gray-800 text-4xl font-bold py-3'>Login</h1>
           <p className='w-3/4 mx-auto text-gray-600'>Nice to see you again</p>
         </div>
-        <form className='flex flex-col gap-4'>
+        <form className='flex flex-col gap-4' onSubmit={formik.handleSubmit}>
           <div className={styles.input_group}>
             <input
               type='email'
               name='email'
               placeholder='Email'
               className={styles.input_text}
+              {...formik.getFieldProps('email')}
             />
             <span className='icon flex items-center px-4 bg-slate-200 rounded-r-xl'>
               <HiAtSymbol />
@@ -42,6 +55,7 @@ export default function Login() {
               name='password'
               placeholder='Password'
               className={styles.input_text}
+              {...formik.getFieldProps('password')}
             />
             <span
               className='icon flex items-center px-4 bg-slate-200 rounded-r-xl'
