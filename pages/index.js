@@ -1,9 +1,13 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession, signOut, getSession } from 'next-auth/react';
 
 export default function Home() {
   const { data: session } = useSession();
+
+  function handleSignOut() {
+    signOut();
+  }
 
   return (
     <div>
@@ -13,7 +17,7 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      {session ? AutorizeUser({ session }) : Guest()}
+      {session ? AutorizeUser({ session, handleSignOut }) : Guest()}
     </div>
   );
 }
@@ -38,7 +42,7 @@ function Guest() {
 
 // Autorize User
 
-function AutorizeUser({ session }) {
+function AutorizeUser({ session, handleSignOut }) {
   return (
     <main className='container mx-auto text-center py-20'>
       <h3 className='text-4xl font-bold'>Autorize User Homepage</h3>
@@ -52,6 +56,7 @@ function AutorizeUser({ session }) {
         <button
           type='submit'
           className='mt-5 px-10 py-1 rounded-sm bg-indigo-500 text-gray-50'
+          onClick={handleSignOut}
         >
           Sign Out
         </button>
@@ -66,4 +71,21 @@ function AutorizeUser({ session }) {
       </div>
     </main>
   );
+}
+
+export async function getServerSideProps({ req }) {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 }
