@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useFormik } from 'formik';
 import loginValidate from 'lib/validate';
-import useRouter from 'next/router';
+import { useRouter } from 'next/router';
 
 export default function Login() {
   const [show, setShow] = useState(false);
