@@ -8,9 +8,11 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useFormik } from 'formik';
 import loginValidate from 'lib/validate';
+import useRouter from 'next/router';
 
 export default function Login() {
   const [show, setShow] = useState(false);
+  const router = useRouter();
   //Formik Hook
   const formik = useFormik({
     initialValues: {
@@ -22,7 +24,14 @@ export default function Login() {
   });
 
   async function onSubmit(values) {
-    console.log(values);
+    const status = await signIn('credentials', {
+      redirect: false,
+      email: values.email,
+      password: values.password,
+      callbackUrl: '/',
+    });
+
+    if (status.ok) router.push(status.url);
   }
 
   async function handleGoogleSignIn() {
